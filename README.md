@@ -46,7 +46,7 @@
 
 ## Usage
 
-Download into a new folder with a subfolder "./scipts"
+Download into a new folder with a subfolder "./scripts"
 
 ```bash
 ./scripts/setup_project.sh [options]
