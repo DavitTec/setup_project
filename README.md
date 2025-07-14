@@ -2,7 +2,7 @@
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/DavitTec/setup_project)
 ![GitHub license](https://img.shields.io/github/license/DavitTec/setup_project)
-![GitHub Actions Workflow Status](https://github.com/DavitTec/setup_project/workflows/Lint%20and%20Test/badge.svg)
+![GitHub Actions Workflow Status](https://github.com/DavitTec/setup_project/workflows/Lint/badge.svg)
 ![Shell](https://img.shields.io/badge/language-Bash-blue)
 ![VSCode](https://img.shields.io/badge/IDE-VSCode-green)
 
