@@ -2,8 +2,32 @@
 
 Comprehensive Project Summary for `setup_project` (v0.2.5)
 
-<!-- START doctoc -->
-<!-- END doctoc -->
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Overview](#overview)
+- [Features](#features)
+  - [Key Features](#key-features)
+  - [Project Structure](#project-structure)
+  - [Current Status](#current-status)
+- [GitHub Actions](#github-actions)
+- [TODO](#todo)
+  - [Missed Items (Not in README.md)](#missed-items-not-in-readmemd)
+  - [Recommendations for Next Phase (Testing)](#recommendations-for-next-phase-testing)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [Changelog](#changelog)
+- [Documentation](#documentation)
+- [License](#license)
+- [Contact](#contact)
+- [Notes](#notes)
+- [References](#references)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
