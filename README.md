@@ -6,6 +6,10 @@
 ![VSCode](https://img.shields.io/badge/IDE-VSCode-green)
 ![GitHub License](https://img.shields.io/github/license/DavitTec/setup_project)
 
+
+<!-- START doctoc -->
+<!-- END doctoc -->
+
 ## Description
 
 `setup_project.sh` is a Bash script designed to automate the initialization of development projects, supporting multiple languages (Node.js, Python, Bash, Perl, etc.) with a focus on reproducibility, dependency management, and VSCode integration. It parses project details from the directory path or a YAML config (`initial_config.yaml`), sets up Git, generates essential files (README, main.sh, .vscode configs), and handles backups and logging.
