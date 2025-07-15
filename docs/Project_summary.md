@@ -2,7 +2,8 @@
 
 Comprehensive Project Summary for `setup_project` (v0.2.5)
 
-[TOC]
+<!-- START doctoc -->
+<!-- END doctoc -->
 
 ---
 
