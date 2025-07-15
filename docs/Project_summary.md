@@ -1,6 +1,12 @@
 # Project summary
 
-## Comprehensive Project Summary for `setup_project` (v0.2.5)
+Comprehensive Project Summary for `setup_project` (v0.2.5)
+
+[TOC]
+
+---
+
+## Overview
 
 The `setup_project` repository, hosted at [https://github.com/DavitTec/setup_project](https://github.com/DavitTec/setup_project), provides a Bash script (`setup_project.sh`) designed to streamline the initialization of development projects across multiple programming languages (Node.js, Python, Bash, Perl, and multi-language setups) with a focus on reproducibily, dependency management, and VSCode integration.
 
@@ -32,7 +38,7 @@ The project is licensed under MIT and is in active development, with a focus on 
 - **Reproducibility**: Ensures consistent setups via path inference, YAML configs, and versioned backups.
 - **Error Handling**: Uses `set -euo pipefail` and includes checks for command failures (e.g., `git init`, `curl`, `yq` parsing).
 
-#### Project Structure
+### Project Structure
 
 ```bash
 setup_project/
@@ -72,6 +78,8 @@ setup_project/
 A basic workflow (`.github/workflows/lint-and-test.yml`) lints with ShellCheck and runs the script, verifying generated files. Expand for unit tests (TODO #025).
 
 ## TODO
+
+See also main ( [Todo.md](Todo.md) )
 
 ### Missed Items (Not in README.md)
 
