@@ -5,7 +5,7 @@ Comprehensive Project Summary for `setup_project` (v0.2.5)
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-**Table of Contents**
+- **Table of Contents**
 
 - [Overview](#overview)
 - [Features](#features)

@@ -350,7 +350,7 @@ This version is stable for GitHub release. Focus on TODOs #10, #19, #20, #24, #2
 
 #### Rating/Score for Bash Script Design, Features, and Structure
 
-**Overall Score: 8.5/10**
+- **Overall Score: 8.5/10**
 
 **Breakdown:**
 
