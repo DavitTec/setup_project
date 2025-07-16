@@ -6,7 +6,6 @@
 ![VSCode](https://img.shields.io/badge/IDE-VSCode-green)
 ![GitHub License](https://img.shields.io/github/license/DavitTec/setup_project)
 
-
 ## Description
 
 `setup_project.sh` is a Bash script designed to automate the initialization of development projects, supporting multiple languages (Node.js, Python, Bash, Perl, etc.) with a focus on reproducibility, dependency management, and VSCode integration. It parses project details from the directory path or a YAML config (`initial_config.yaml`), sets up Git, generates essential files (README, main.sh, .vscode configs), and handles backups and logging.
@@ -19,17 +18,21 @@
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**
 
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [Contributing](#contributing)
-- [Testing](#testing)
-- [Changelog](#changelog)
-- [License](#license)
-- [Contact](#contact)
+Table of Contents
+
+- [setup\_project](#setup_project)
+  - [Description](#description)
+  - [Version](#version)
+  - [Features](#features)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Configuration](#configuration)
+  - [Contributing](#contributing)
+  - [Testing](#testing)
+  - [Changelog](#changelog)
+  - [License](#license)
+  - [Contact](#contact)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -50,6 +53,8 @@
    ```bash
    git clone https://github.com/DavitTec/setup_project.git
    cd setup_project
+
+   ```
 
 2. Ensure dependencies (`git`, `yq`) are installed:
 
@@ -73,7 +78,7 @@ Download into a new folder with a subfolder "./scripts"
 
 then when config file is created
 
-```bash
+````bash
 - Initialize: ./main.sh -init
 - Install: ./main.sh -i
 ```bash
@@ -96,7 +101,7 @@ then when config file is created
 ./scripts/setup_project.sh -s
 # Run with debug logging
 ./scripts/setup_project.sh --verbose debug
-```
+````
 
 ## Configuration
 
