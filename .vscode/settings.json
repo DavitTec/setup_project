@@ -16,12 +16,7 @@
     "editor.defaultFormatter": "foxundermoon.shell-format"
   },
   "eslint.format.enable": true,
-  "eslint.validate": [
-    "javascript",
-    "json",
-    "markdown",
-    "typescript"
-  ],
+  "eslint.validate": ["javascript", "json", "markdown", "typescript"],
   "files.watcherExclude": {
     "**/.git/**": true,
     "**/node_modules/**": true
