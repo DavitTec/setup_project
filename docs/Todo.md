@@ -1,7 +1,5 @@
 # Todo
 
-
-
 ---
 
 ### 1. Mermaid Flowchart
@@ -19,13 +17,13 @@ graph TD
     B -->|"--verbose <mode>"| H[Set VERBOSE]
     B -->|Unknown| I[log: Unknown option, show_help, exit]
     B -->|No args| J[Main Setup Flow]
-    
+
     J --> K[Create scripts/ dir]
     K --> L{CLEAR_LOGS?}
     L -->|true| M[Move existing logs to archives/]
     L -->|false| N[setup_vscode]
     M --> N
-    
+
     N --> O{config_file exists?}
     O -->|No| P[create_default_yaml]
     O -->|Yes| Q[Log: config exists, skip]
@@ -343,8 +341,6 @@ GitHub README.md template for your `setup_project` repository. It includes stand
    - Add a `bash.gitignore` to `https://github.com/DavitTec/gitignore` and update `URL` in `setup_git`.
 
 This version is stable for GitHub release. Focus on TODOs #10, #19, #20, #24, #25 for v0.3.0 to enhance testing and modularity.
-
-
 
 ### 10. Rating
 

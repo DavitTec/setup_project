@@ -21,7 +21,7 @@
 
 Table of Contents
 
-- [setup\_project](#setup_project)
+- [setup_project](#setup_project)
   - [Description](#description)
   - [Version](#version)
   - [Features](#features)

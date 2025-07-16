@@ -1,4 +1,20 @@
+# Node.js .gitignore template
+#
+
+# pnpm
+# https://pnpm.io/
+# Ignore the pnpm-lock.yaml file
+pnpm-lock.yaml
+
+/tmp/*.json
+.env
+# Ignore all files in the .davit directory
+.davit/
+archives/
+
+# Ignore all files in the .vscode directory
 # Logs
+logs/
 logs
 *.log
 npm-debug.log*
