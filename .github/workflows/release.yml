@@ -10,11 +10,20 @@ on:
 
 permissions:
   contents: write  # Grant write access for creating releases
+
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository with tags
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history and tags
+      - name: Debug Tag Information
+        run: |
+          echo "Current tag: ${{ github.ref_name }}"
+          git tag -l
+          git describe --tags --abbrev=0
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
