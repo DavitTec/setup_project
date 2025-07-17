@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [0.3.3](https://github.com/davittec/setup_project/compare/v0.3.2...v0.3.3) (2025-07-17)
+
+### Bug Fixes
+
+- **setup_project_v0.3.3:** update setup_project_v0.3.3 ([d8d2a0a](https://github.com/davittec/setup_project/commit/d8d2a0a7976cfde2b689b1735ecc04ed989b81cd))
+- **setup_project.sh:** update to v0.3.2 ([736c331](https://github.com/davittec/setup_project/commit/736c331c7726dda653ae17d7aaf269b275df26a8))
+
 ## [0.3.2](https://github.com/davittec/setup_project/compare/v0.3.1...v0.3.2) (2025-07-17)
 
 ### Bug Fixes
