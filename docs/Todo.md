@@ -1,7 +1,5 @@
 # Todo
 
-
-
 ---
 
 ### 1. Mermaid Flowchart
@@ -19,13 +17,13 @@ graph TD
     B -->|"--verbose <mode>"| H[Set VERBOSE]
     B -->|Unknown| I[log: Unknown option, show_help, exit]
     B -->|No args| J[Main Setup Flow]
-    
+
     J --> K[Create scripts/ dir]
     K --> L{CLEAR_LOGS?}
     L -->|true| M[Move existing logs to archives/]
     L -->|false| N[setup_vscode]
     M --> N
-    
+
     N --> O{config_file exists?}
     O -->|No| P[create_default_yaml]
     O -->|Yes| Q[Log: config exists, skip]
@@ -344,8 +342,6 @@ GitHub README.md template for your `setup_project` repository. It includes stand
 
 This version is stable for GitHub release. Focus on TODOs #10, #19, #20, #24, #25 for v0.3.0 to enhance testing and modularity.
 
-
-
 ### 10. Rating
 
 `setup_project.sh` script at version 0.2.4 is a robust foundation for automating project setup, and your recent changes (e.g., `CLEAR_LOGS`, skipping existing README/main.sh, VSCode checks for `code-insiders`) show thoughtful iteration. Below, I’ll provide a **rating/score** for the script’s design, features, and structure, a **Mermaid flowchart** to visualize its flow, a **project summary** for a GitHub README.md with badges and GitHub Actions, and address your goals for versioning, changelog, and modularity while maximizing YAML usage. I’ll also highlight remaining issues and suggest improvements for a stable v0.2.4 release before pushing to `https://github.com/DavitTec/setup_project`.
@@ -354,7 +350,7 @@ This version is stable for GitHub release. Focus on TODOs #10, #19, #20, #24, #2
 
 #### Rating/Score for Bash Script Design, Features, and Structure
 
-**Overall Score: 8.5/10**
+- **Overall Score: 8.5/10**
 
 **Breakdown:**
 

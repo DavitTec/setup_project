@@ -4,7 +4,8 @@ Comprehensive Project Summary for `setup_project` (v0.2.5)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**
+
+- **Table of Contents**
 
 - [Overview](#overview)
 - [Features](#features)
@@ -90,7 +91,6 @@ setup_project/
   - Inline logging/backup functions; external scripts planned (TODO #019, #020).
   - No changelog generation (planned; TODO #024).
 - **Future Plans**:
-
   - Separate repositories for logging, backup, and Git actions.
   - Testing phase with unit tests and dry-run mode.
   - Monorepo support exploration (deferred for simplicity).
@@ -120,14 +120,12 @@ See also main ( [Todo.md](Todo.md) )
 ### Recommendations for Next Phase (Testing)
 
 1. **Testing Setup (TODO #025)**:
-
    - Install `bats` (`sudo apt install bats`).
    - Create `tests/setup_project.bats` (as shown previously).
    - Add tests for each function (e.g., `backup`, `setup_vscode`, `generate_readme`).
    - Update GitHub Actions to run `bats tests/setup_project.bats`.
 
 2. **Dry-Run Mode (TODO #010)**:
-
    - Add `--dry-run` flag to log actions without executing file writes or commands.
    - Example:
 
@@ -150,19 +148,16 @@ See also main ( [Todo.md](Todo.md) )
      ```
 
 3. **External Scripts (TODO #019, #020)**:
-
    - Start new repositories (e.g., `DavitTec/logging`, `DavitTec/backup`) using `setup_project.sh`.
    - Develop `logging.sh` and `backup.sh` with interfaces compatible with current inline functions.
    - Source them in `setup_project.sh` if present (e.g., `[[ -f "./scripts/logging.sh" ]] && source ./scripts/logging.sh`).
 
 4. **Branching Strategy**:
-
    - Use `main` for stable releases (e.g., v0.2.5).
    - Create feature branches (e.g., `feature/testing`, `feature/external-logging`) for testing and modularity.
    - Avoid monorepo for now to keep complexity low; revisit after testing phase.
 
 5. **Changelog (TODO #024)**:
-
    - Add `generate_changelog` function (as suggested previously).
    - Create `CHANGELOG.md` with initial entry:
 
