@@ -4,3 +4,4 @@
 archives/
 logs/
 log
+.env_example

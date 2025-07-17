@@ -89,7 +89,7 @@ release() {
   "MD003": { "style": "atx" },
   "MD004": { "style": "dash" },
   "MD007": { "indent": 2 },
-  "MD013": { "line_length": 150 },
+  "MD013": false,
   "MD024": false,
   "MD031": true,
   "MD032": true,
@@ -106,7 +106,7 @@ EOL
 
   # Validate commit URLs
   log "Validating commit URLs..."
-  grep -o 'https://github.com/DavitTec/usb_probe/commit/[^)]*' CHANGELOG.md | while read -r url; do
+  grep -o 'https://github.com/DavitTec/setup_project/commit/[^)]*' CHANGELOG.md | while read -r url; do
     if curl --output /dev/null --silent --head --fail "$url"; then
       log "URL valid: $url"
     else

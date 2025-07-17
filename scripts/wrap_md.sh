@@ -18,6 +18,8 @@ fi
 
 MAX_LINE_LENGTH=${MAX_LINE_LENGTH:-120}
 
+# TODO: if MAX_LINE_LENGTH= false then exit
+
 # Ensure Python is available
 if ! command -v python3 >/dev/null 2>&1; then
   echo "ERROR: Python3 is required but not installed."
