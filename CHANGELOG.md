@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [0.3.2](https://github.com/davittec/setup_project/compare/v0.3.1...v0.3.2) (2025-07-17)
+
+### Bug Fixes
+
+- **release.sh:** update with error detection ([e8a4012](https://github.com/davittec/setup_project/commit/e8a4012927151be68e41c8800f94106ce0e7183f))
+- **setup_project_v0.3.1:** testing recipe functions ([5ebc11d](https://github.com/davittec/setup_project/commit/5ebc11d2e173dc803b9726d524859c440ec5009b))
+
 ## [0.3.1](https://github.com/davittec/setup_project/compare/v0.3.0...v0.3.1) (2025-07-17)
 
 ### Bug Fixes
