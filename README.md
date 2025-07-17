@@ -8,40 +8,24 @@
 
 ## Description
 
-`setup_project.sh` is a Bash script designed to automate the initialization of development projects, supporting multiple languages (Node.js, Python, Bash, Perl, etc.) with a focus on reproducibility, dependency management, and VSCode integration. It parses project details from the directory path or a YAML config (`initial_config.yaml`), sets up Git, generates essential files (README, main.sh, .vscode configs), and handles backups and logging.
+`setup_project.sh` is a Bash script designed to automate the initialisation of development projects, supporting multiple languages (Node.js, Python, Bash, Perl, etc.) with a focus on reproducible, dependency management, and VSCode integration. It parses project details from the directory path or a YAML config (`initial_config.yaml`), sets up Git, generates essential files (README, main.sh, .vscode configs), and handles backups and logging.
 
 ## Version
 
-0.2.5
+0.2.6
 
 ---
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-Table of Contents
-
-- [setup_project](#setup_project)
-  - [Description](#description)
-  - [Version](#version)
-  - [Features](#features)
-  - [Installation](#installation)
-  - [Usage](#usage)
-  - [Configuration](#configuration)
-  - [Contributing](#contributing)
-  - [Testing](#testing)
-  - [Changelog](#changelog)
-  - [License](#license)
-  - [Contact](#contact)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Features
 
 - **Multi-Language Support**: Infers project language (Node.js, Python, Bash, Perl, multi) from path (e.g., `/opt/davit/development/node_recipe_website_v0.1/`).
-- **YAML Configuration**: Uses `initial_config.yaml` for customizable project settings (name, version, dependencies, etc.).
+- **YAML Configuration**: Uses `initial_config.yaml` for customisation project settings (name, version, dependencies, etc.).
 - **VSCode Integration**: Generates `.vscode/settings.json` and `launch.json` for debugging.
-- **Git Setup**: Initializes Git with templates from a custom fork (`DavitTec/gitignore`) or inline defaults.
+- **Git Setup**: Initialises Git with templates from a custom fork (`DavitTec/gitignore`) or inline defaults.
 - **Logging**: Configurable verbosity (`off`, `on`, `debug`) with timestamped logs to `logs/`.
 - **Backup**: Archives script versions to `archives/`.
 - **Extensibility**: Planned modularity for external logging and backup scripts.
@@ -78,10 +62,8 @@ Download into a new folder with a subfolder "./scripts"
 
 then when config file is created
 
-````bash
-- Initialize: ./main.sh -init
-- Install: ./main.sh -i
-```bash
+- Initialize: `./main.sh -init`
+- Install: `./main.sh -i`
 
 **Options**:
 
@@ -101,7 +83,7 @@ then when config file is created
 ./scripts/setup_project.sh -s
 # Run with debug logging
 ./scripts/setup_project.sh --verbose debug
-````
+```
 
 ## Configuration
 
@@ -135,7 +117,7 @@ Contributions are welcome! Please:
 
 ## Changelog
 
-(TODO: Add CHANGELOG.md with versioning details.)
+ [CHANGELOG.md](CHANGELOG.md) 
 
 ## License
 
