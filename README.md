@@ -10,9 +10,11 @@
 
 `setup_project.sh` is a Bash script designed to automate the initialisation of development projects, supporting multiple languages (Node.js, Python, Bash, Perl, etc.) with a focus on reproducible, dependency management, and VSCode integration. It parses project details from the directory path or a YAML config (`initial_config.yaml`), sets up Git, generates essential files (README, main.sh, .vscode configs), and handles backups and logging.
 
+`setup_project.sh` automates the initialisation of development projects, much like baking a cake: you choose a recipe (e.g., Node.js static website, Bash script) and the script sets up the project structure, dependencies, Git, and VSCode configurations. Recipes are YAML files stored in `./recipes/`, defining project metadata, files, and settings.
+
 ## Version
 
-0.2.6
+0.3.0
 
 ---
 
@@ -28,7 +30,7 @@
 - **Git Setup**: Initialises Git with templates from a custom fork (`DavitTec/gitignore`) or inline defaults.
 - **Logging**: Configurable verbosity (`off`, `on`, `debug`) with timestamped logs to `logs/`.
 - **Backup**: Archives script versions to `archives/`.
-- **Extensibility**: Planned modularity for external logging and backup scripts.
+- **Extensible**: Planned molecularity for external logging and backup scripts.
 
 ## Installation
 
@@ -37,19 +39,20 @@
    ```bash
    git clone https://github.com/DavitTec/setup_project.git
    cd setup_project
-
    ```
 
 2. Ensure dependencies (`git`, `yq`) are installed:
 
    ```bash
    sudo apt update && sudo apt install -y git yq
+   sudo npm install -g pnpm
    ```
 
 3. Run the script:
 
    ```bash
-   ./scripts/setup_project.sh
+   ./scripts/setup_project.sh or
+   ./scripts/setup_project.sh --recipe ./recipes/node_pnpm_html_website.yaml
    ```
 
 ## Usage
@@ -102,22 +105,122 @@ git:
 
 If missing, it’s generated based on the directory path.
 
-## Contributing
+## Project Folder Naming Structure
 
-Contributions are welcome! Please:
+To ensure reproducibility, target project folders must follow this naming convention:
+
+```bash
+<language>_<package_manager>_<project_type>_v<version>
+```
+
+- **language**: Primary programming language (e.g., `node`, `python`, `bash`, `perl`).
+- **package_manager**: Dependency manager (e.g., `pnpm`, `npm`, `pip`, `none`).
+- **project_type**: Type of project (e.g., `html_website`, `cli`, `api`).
+- **version**: Project version (e.g., `v0.1.0`).
+
+**Examples**:
+
+- `node_pnpm_html_website_v0.1.0`
+- `python_pip_cli_v0.2.0`
+- `bash_none_script_v0.1.0`
+
+The script infers project details (name, version, language, package manager) from the directory name if not specified in the recipe.
+
+## Creating a New Recipe
+
+Recipes are YAML files stored in `./recipes/` that define project settings, files, and dependencies. To create a new recipe:
+
+1. Copy an existing recipe (e.g., `./recipes/default.yaml`) or start from scratch.
+2. Define the following sections:
+   - `project`: Metadata (name, version, author, primary_language, package_manager).
+   - `git`: Git initialization settings (init, template).
+   - `env`: Environment variables.
+   - `vscode`: VSCode extensions and settings.
+   - `dependencies`: Global and project-specific dependencies.
+   - `logging`: Log verbosity and path.
+   - `backup`: Backup settings.
+   - `files`: Files to generate with placeholders (e.g., `{{project.name}}`).
+
+**Example Recipe** (`./recipes/node_pnpm_html_website.yaml`):
+
+```yaml
+project:
+  name: html_website
+  version: 0.1.0
+  author: davit
+  primary_language: node
+  package_manager: pnpm
+  project_type: html_website
+git:
+  init: true
+  template: Node
+env:
+  NODE_ENV: development
+vscode:
+  extensions:
+    - esbenp.prettier-vscode
+    - dbaeumer.vscode-eslint
+dependencies:
+  global:
+    - git
+    - yq
+    - pnpm
+  project:
+    - prettier
+    - eslint
+    - serve
+logging:
+  verbosity: debug
+  path: logs/
+backup:
+  enabled: true
+  path: archives/
+files:
+  - path: index.html
+    content: |
+      <!DOCTYPE html>
+      <html>
+      <head><title>My Website</title></head>
+      <body><h1>Hello, World!</h1></body>
+      </html>
+  - path: package.json
+    content: |
+      {
+        "name": "{{project.name}}",
+        "version": "{{project.version}}",
+        "scripts": {
+          "start": "serve ."
+        }
+      }
+```
+
+## Cloning Recipes from GitHub
+
+**TODO**: Pre-prepared recipes are available at [https://github.com/DavitTec/setup_project_recipes](https://github.com/DavitTec/setup_project_recipes). To clone:
+
+```bash
+git clone https://github.com/DavitTec/setup_project_recipes.git ./recipes
+```
+
+## Testing
+
+**TODO**: Tests are located in `./scripts/tests/` and run using BATS:
+
+```bash
+sudo apt install bats
+bats scripts/tests/node_pnpm_html_website.bats
+```
+
+## Changelog
+
+[CHANGELOG.md](CHANGELOG.md)
+
+## Contributing
 
 1. Fork the repo.
 2. Create a feature branch (`git checkout -b feature/xyz`).
 3. Commit with [Conventional Commits](https://www.conventionalcommits.org/).
 4. Submit a pull request.
-
-## Testing
-
-(TODO: Add testing instructions once implemented.)
-
-## Changelog
-
-[CHANGELOG.md](CHANGELOG.md)
 
 ## License
 
@@ -129,11 +232,11 @@ David Mullins - [david@davit.ie](mailto:david@davit.ie) - [https://davit.ie](htt
 
 Project Link: [https://github.com/DavitTec/setup_project](https://github.com/DavitTec/setup_project)
 
+---
+
 **Notes**:
 
-- **Badges**: Added GitHub release, license, workflow status, and language/IDE badges. Update URLs when the repo is live.
 - **GitHub Actions**: Below is a basic workflow for linting with ShellCheck and testing (placeholder for future tests).
-- **Changelog**: Placeholder added; see below for setup.
 - **Testing**: Placeholder added; see testing recommendations below.
 
 ---
