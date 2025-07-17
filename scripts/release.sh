@@ -1,6 +1,6 @@
 #!/bin/bash
 # release.sh
-# Version: 0.2.14
+# Version: 0.2.15
 # Purpose: Manage release process with version bump and changelog update
 
 # Resolve script directory for relative paths
@@ -69,7 +69,12 @@ release() {
   log "Generating changelog..."
   if ! pnpm changelog:first; then
     log "ERROR: Changelog generation failed. Restoring previous CHANGELOG.md..."
-    git checkout -- CHANGELOG.md
+
+    git checkout -- CHANGELOG.md || {
+      log "ERROR: Failed to checkout -- CHANGELOG.md"
+      exit 1
+    }
+
     exit 1
   fi
 
@@ -124,8 +129,14 @@ EOL
   fi
 
   # Push changes and tags
-  git push origin master
-  git push origin --tags
+  git push origin master || {
+    log "ERROR: Failed to push to master"
+    exit 1
+  }
+  git push origin --tags || {
+    log "ERROR: Failed to push tags"
+    exit 1
+  }
   log "Release $release_type completed!"
 }
 
