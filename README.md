@@ -6,6 +6,8 @@
 ![VSCode](https://img.shields.io/badge/IDE-VSCode-green)
 ![GitHub License](https://img.shields.io/github/license/DavitTec/setup_project)
 
+A Bash script to bootstrap development projects across multiple languages using [YAML][YAML]-based recipes, with support for [Git][Git], [VSCode][VSCode], and dependency management.
+
 ## Description
 
 `setup_project.sh` is a Bash script designed to automate the initialisation of development projects, supporting multiple languages (Node.js, Python, Bash, Perl, etc.) with a focus on reproducible, dependency management, and VSCode integration. It parses project details from the directory path or a YAML config (`initial_config.yaml`), sets up Git, generates essential files (README, main.sh, .vscode configs), and handles backups and logging.
@@ -77,7 +79,9 @@ then when config file is created
 - `--config-path <path>`: Specify custom `initial_config.yaml` path
 - `--verbose <off|on|debug>`: Set logging verbosity (default: on)
 
-**Example**:
+**TODO:** Fix examples
+
+**Example**: 1
 
 ```bash
 # Full setup in /opt/davit/development/test_setup
@@ -86,6 +90,18 @@ then when config file is created
 ./scripts/setup_project.sh -s
 # Run with debug logging
 ./scripts/setup_project.sh --verbose debug
+```
+
+**Example:** 2
+
+```bash
+# Setup a Node.js static website
+mkdir -p my_project/node_pnpm_html_website_v0.1.0/scripts my_project/node_pnpm_html_website_v0.1.0/recipes
+# copy setup_project.sh to my_project/node_pnpm_html_website_v0.1.0/scripts
+# copy recipes/node_pnpm_html_website.yaml to my_project/node_pnpm_html_website_v0.1.0/recipes
+cd ./my_project/node_pnpm_html_website_v0.1.0
+./scripts/setup_project.sh --recipe ./recipes/node_pnpm_html_website.yaml
+
 ```
 
 ## Configuration
@@ -240,3 +256,13 @@ Project Link: [https://github.com/DavitTec/setup_project](https://github.com/Dav
 - **Testing**: Placeholder added; see testing recommendations below.
 
 ---
+
+## References
+
+---
+
+- [YAML]: https://yaml.org/ "YAML Ain't Markup Language"
+
+- [VSCode]: https://code.visualstudio.com/ "Visual Studio Code"
+
+- [Git]: https://git-scm.com/ "Git is a free and open source distributed version control system"

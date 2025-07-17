@@ -1,13 +1,13 @@
 project:
   name: html_website
-  version: 0.1.0
-  author: davit
+  version: 0.2.0
+  author: Joe Bloggs
   primary_language: node
   package_manager: pnpm
   project_type: html_website
 git:
   init: true
-  template: Node
+  template: node
 env:
   NODE_ENV: development
 vscode:
@@ -34,7 +34,7 @@ files:
     content: |
       <!DOCTYPE html>
       <html>
-      <head><title>My Website</title></head>
+      <head><title>My Website 2</title></head>
       <body><h1>Hello, World!</h1></body>
       </html>
   - path: package.json
