@@ -117,7 +117,7 @@ Contributions are welcome! Please:
 
 ## Changelog
 
- [CHANGELOG.md](CHANGELOG.md) 
+[CHANGELOG.md](CHANGELOG.md)
 
 ## License
 
