@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script: setup_project.sh
-# Version: 0.2.5
+# Version: 0.3.0
 # Description: Automates initial project setup, including config creation, dependency installation, git init, and file generation based on path inference or YAML config.
 # Purpose: Bootstrap small to monorepo projects across languages (Node, Python, Bash, Perl, etc.) with reproducibility, dependency management, and VSCode integration.
 # Alias: setprj
@@ -209,12 +209,12 @@ parse_path() {
   root_name="$(basename "$full_path")"
   IFS='/' read -ra subfolders <<<"$full_path"
 
-  project_name="${root_name%%_v[0-9.]*}" # Global
+  project_name="${root_name%%_v[0-9.]*}"                             # Global
   version=$(echo "$root_name" | sed -n 's/.*_v\([0-9.]*\).*/\1.0/p') # Global
   [[ -z "$version" ]] && version="$VERSION"
 
   primary_language="bash" # Global, Default
-  frameworks=()          # Global
+  frameworks=()           # Global
   if [[ "$full_path" =~ /node/ || "$project_name" =~ ^node_ ]]; then
     primary_language="node"
     if [[ "$full_path" =~ /next/ ]]; then
@@ -245,7 +245,10 @@ create_default_yaml() {
   parse_path
 
   local frameworks_joined=""
-  frameworks_joined=$(IFS=', '; echo "${frameworks[*]}")
+  frameworks_joined=$(
+    IFS=', '
+    echo "${frameworks[*]}"
+  )
 
   cat <<EOF >"$config_file"
 # initial_config.yaml
@@ -319,13 +322,13 @@ setup_git() {
     local template
     template=$(yq e '.git.template' "$config_file" || log "Error: yq parse failed for git.template")
     URL="https://raw.githubusercontent.com/DavitTec/gitignore/main/${template}.gitignore"
-    if curl -s "$URL" > .gitignore; then
-      echo -e "\n# Archives\narchives/" >> .gitignore
+    if curl -s "$URL" >.gitignore; then
+      echo -e "\n# Archives\narchives/" >>.gitignore
       log "Git initialized with $template template from fork"
     else
       log "Error: Failed to fetch .gitignore template from fork; falling back to inline"
       if [[ "$template" = "bash" ]]; then
-        cat <<EOF > .gitignore
+        cat <<EOF >.gitignore
 # Temp files
 *~
 *.swp
@@ -508,9 +511,14 @@ install_yq() {
 # Main function
 main() {
   local config_file="initial_config.yaml"
+  local recipe="./recipes/generic_bash.yaml"
 
   while [[ $# -gt 0 ]]; do
     case $1 in
+    --recipe)
+      recipe="$2"
+      shift
+      ;;
     -h | --help) show_help ;;
     -b | --backup)
       backup
@@ -541,6 +549,16 @@ main() {
   log "scripts_dir: $PWD/scripts"
   mkdir -p scripts
   # Assume this script is already in ./scripts
+
+  log "RECIPE: $recipe"  
+
+  if [[ -f "$recipe" ]]; then
+    log "Using recipe: $recipe"
+    # Merge recipe with initial_config.yaml (if present)
+    # Example: yq ea '. as $item ireduce ({}; . * $item )' initial_config.yaml "$recipe" > merged_config.yaml
+  else
+    log "Recipe not found, using default settings"
+  fi
 
   # Move or reset logs if true
   if "$CLEAR_LOGS"; then
