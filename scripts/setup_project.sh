@@ -1,11 +1,11 @@
 #!/bin/bash
 # Script: setup_project.sh
-# Version: 0.3.2
+# Version: 0.3.3
 # Description: Automates initial project setup, including config creation, dependency installation, git init, and file generation based on path inference or YAML config.
 # Purpose: Bootstrap small to monorepo projects across languages (Node, Python, Bash, Perl, etc.) with reproducibility, dependency management, and VSCode integration.
 # Alias: setprj
 # Created: 2025-07-12
-# Updated: 2025-07-15
+# Updated: 2025-07-16
 # Author: David Mullins
 # Contact: david@davit.ie / https://davit.ie
 # Git: https://github.com/DavitTec/$(basename "$(pwd)")
@@ -33,6 +33,7 @@ declare -g VERSION
 VERSION=$(awk '/^####### \/HEADER #######/ {exit} /^# Version:/ {print $3}' "$0")
 declare -g CLEAR_LOGS=true # Delete logs at start, default true
 declare -g LOG_DIR="./logs" # Configurable log directory
+declare -g ARCHIVE_DIR="./archives" # Configurable archive directory
 
 # Logging Function
 # TODO: #019 Source logging script if available
@@ -106,9 +107,9 @@ log() {
 # Function to backup this script to archives
 # TODO: #020 Integrate external backup script
 backup() {
-  mkdir -p ./archives
+  mkdir -p "$ARCHIVE_DIR"
   local source="./scripts/setup_project.sh"
-  local backup_file="./archives/setup_project_v$VERSION.sh"
+  local backup_file="$ARCHIVE_DIR/setup_project_v$VERSION.sh"
   cp "$source" "$backup_file"
   # TODO: #023 what else to backup
   #       1) probably to gzip all to a external folder
@@ -200,16 +201,22 @@ show_version() {
 
 # Function to parse project details from path
 parse_path() {
-  local full_path=""
-  local root_name=""
+  local full_path
+  local root_name
   local subfolders=()
   full_path="$(pwd)"
   root_name="$(basename "$full_path")"
   IFS='/' read -ra subfolders <<<"$full_path"
 
-  project_name="${root_name%%_v[0-9.]*}"                             # Global
-  version=$(echo "$root_name" | sed -n 's/.*_v\([0-9.]*\).*/\1.0/p') # Global
-  [[ -z "$version" ]] && version="$VERSION"
+  # Extract name and version from directory
+  if [[ "$root_name" =~ ^([a-zA-Z0-9_]+)_v([0-9.]+)$ ]]; then
+    project_name="${BASH_REMATCH[1]}"
+    version="${BASH_REMATCH[2]}"
+  else
+    project_name="${root_name%%_v[0-9.]*}"
+    version=$(echo "$root_name" | sed -n 's/.*_v\([0-9.]*\).*/\1.0/p')
+    [[ -z "$version" ]] && version="$VERSION"
+  fi
 
   primary_language="bash" # Global, Default
   package_manager="none"
@@ -480,8 +487,8 @@ post_setup_actions() {
   local archive
   archive=$(yq e '.post_setup.archive_config' "$config_file" || { log "Error: yq parse failed for post_setup"; return 1; })
   if [[ "$archive" = "true" ]]; then
-    mkdir -p ./archives
-    mv "$config_file" "./archives/initial_config_$(date +%Y%m%d).yaml" || { log "Error: Failed to archive config"; return 1; }
+    mkdir -p "$ARCHIVE_DIR"
+    mv "$config_file" "$ARCHIVE_DIR/initial_config_$(date +%Y%m%d).yaml" || { log "Error: Failed to archive config"; return 1; }
   fi
   if [[ -f "main.sh" ]]; then
     ./main.sh -b
@@ -584,9 +591,8 @@ main() {
 
   # Ensure in project root; create ./scripts if needed
   log "scripts_dir: $PWD/scripts"
-  mkdir -p scripts
-  # Assume this script is already in ./scripts
-
+  mkdir -p ./scripts
+ 
   log "RECIPE: $recipe"  
 
   if [[ -f "$recipe" ]]; then
@@ -606,17 +612,18 @@ main() {
     log "Recipe not found, using default settings"
   fi
 
-  # Set LOG_DIR based on recipe or default
+  # Set LOG_DIR and ARCHIVE_DIR based on recipe
   LOG_DIR=$(yq e '.logging.path // "./logs"' "$config_file" || { log "Error: yq parse failed for logging.path"; return 1; })
+  ARCHIVE_DIR=$(yq e '.backup.path // "./archives"' "$config_file" || { log "Error: yq parse failed for backup.path"; return 1; })
 
   # Move or reset logs if true
   if "$CLEAR_LOGS"; then
     local logfile
     logfile=$(find "$LOG_DIR" -name "setup_project_*.log" -print -quit 2>/dev/null)
     if [[ -n "$logfile" ]]; then
-      mkdir -p ./archives
-      mv "$logfile" "./archives/" || { log "Error: Failed to move $logfile"; return 1; }
-      log "[Reset] $logfile moved to ./archives"
+      mkdir -p "$ARCHIVE_DIR"
+      mv "$logfile" "$ARCHIVE_DIR/" || { log "Error: Failed to move $logfile"; return 1; }
+      log "[Reset] $logfile moved to $ARCHIVE_DIR"
       log "[NEW] ########### Logfile created ##############"
     fi
   fi
@@ -635,6 +642,7 @@ main() {
       yq --version
     else
       log "Error: yq installation failed or skipped; script may fail"
+      return 1
     fi
   fi
 
