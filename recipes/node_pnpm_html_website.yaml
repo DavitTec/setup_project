@@ -1,0 +1,48 @@
+project:
+  name: html_website
+  version: 0.1.0
+  author: davit
+  primary_language: node
+  package_manager: pnpm
+  project_type: html_website
+git:
+  init: true
+  template: node
+env:
+  NODE_ENV: development
+vscode:
+  extensions:
+    - esbenp.prettier-vscode
+    - dbaeumer.vscode-eslint
+dependencies:
+  global:
+    - git
+    - yq
+    - pnpm
+  project:
+    - prettier
+    - eslint
+    - serve
+logging:
+  verbosity: debug
+  path: logs/
+backup:
+  enabled: true
+  path: archives/
+files:
+  - path: index.html
+    content: |
+      <!DOCTYPE html>
+      <html>
+      <head><title>My Website</title></head>
+      <body><h1>Hello, World!</h1></body>
+      </html>
+  - path: package.json
+    content: |
+      {
+        "name": "{{project.name}}",
+        "version": "{{project.version}}",
+        "scripts": {
+          "start": "serve ."
+        }
+      }

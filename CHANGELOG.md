@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [0.3.0](https://github.com/davittec/setup_project/compare/v0.2.6...v0.3.0) (2025-07-17)
+
+### Bug Fixes
+
+- remove sync_tags ([83b4a73](https://github.com/davittec/setup_project/commit/83b4a7322e570daf403891802b44aedf3ee627e8))
+
 ## [0.2.6](https://github.com/davittec/setup_project/compare/v0.2.5...v0.2.6) (2025-07-17)
 
 ### Features
