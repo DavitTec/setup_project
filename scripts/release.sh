@@ -6,6 +6,11 @@
 # Resolve script directory for relative paths
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# dynamically detect the default branch:
+default_branch=$(git remote show origin | grep "HEAD branch" | awk '{print $NF}')
+
+log "Default_Branch:$default_branch"
+
 # Load environment variables
 if [ -f "$SCRIPT_DIR/../.env" ]; then
   # shellcheck disable=SC1091
