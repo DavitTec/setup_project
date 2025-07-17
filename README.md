@@ -16,7 +16,7 @@ A Bash script to bootstrap development projects across multiple languages using 
 
 ## Version
 
-0.3.3
+0.3.13
 
 ---
 
@@ -221,6 +221,12 @@ git clone https://github.com/DavitTec/setup_project_recipes.git ./recipes
 ## Testing
 
 **TODO**: Tests are located in `./scripts/tests/` and run using BATS:
+
+Introduced [bats](https://bats-core.readthedocs.io/en/stable/index.html) testing
+
+> [¶ Tutorial](https://bats-core.readthedocs.io/en/stable/tutorial.html#tutorial) > [¶ Installation](https://bats-core.readthedocs.io/en/stable/tutorial.html#quick-installation) >
+
+TODO: See [Understanding BATS Files](docs/understanding_bats_files.md)
 
 ```bash
 sudo apt install bats
