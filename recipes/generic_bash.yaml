@@ -1,0 +1,26 @@
+project:
+  name: generic_project
+  version: 0.1.0
+  author: davit
+  primary_language: bash
+  package_manager: none
+git:
+  init: true
+  template: bash
+env:
+  SHELL: /bin/bash
+vscode:
+  extensions:
+    - timonwong.shellcheck
+    - foxundermoon.shell-format
+dependencies:
+  global:
+    - git
+    - yq
+  project: []
+logging:
+  verbosity: on
+  path: logs/
+backup:
+  enabled: true
+  path: archives/
