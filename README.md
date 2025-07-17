@@ -16,7 +16,7 @@ A Bash script to bootstrap development projects across multiple languages using 
 
 ## Version
 
-0.3.0
+0.3.2
 
 ---
 
