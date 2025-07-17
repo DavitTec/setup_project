@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## [0.3.1](https://github.com/davittec/setup_project/compare/v0.3.0...v0.3.1) (2025-07-17)
+
+### Bug Fixes
+
+- update recipes ([481b54a](https://github.com/davittec/setup_project/commit/481b54ad49fe0068b0a0cb783c2a8398e63f418d))
+
+### Features
+
+- add generic_project 0.1.0 recipe ([3842f71](https://github.com/davittec/setup_project/commit/3842f710e25b5184629b50a9910d138df9ec69d0))
+- **recipes:** add more default and initial receipes and update README ([9054d44](https://github.com/davittec/setup_project/commit/9054d44853965cd9f23a74cfe2f2613aac49baa8))
+- **setup_project_0.3.0:** added recipe feature ([2dd9b62](https://github.com/davittec/setup_project/commit/2dd9b6215d7e08541a7c2e27f5eb7d1c814f0af7))
+
+### BREAKING CHANGES
+
+- **setup_project_0.3.0:** moved to testing recipes
+
 ## [0.3.0](https://github.com/davittec/setup_project/compare/v0.2.6...v0.3.0) (2025-07-17)
 
 ### Bug Fixes
