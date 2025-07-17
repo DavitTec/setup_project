@@ -2,14 +2,13 @@ name: Create Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-
 permissions:
-  contents: write  # Grant write access for creating releases
+  contents: write # Grant write access for creating releases
 
 jobs:
   release:
@@ -18,7 +17,7 @@ jobs:
       - name: Checkout repository with tags
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch all history and tags
+          fetch-depth: 0 # Fetch all history and tags
       - name: Debug Tag Information
         run: |
           echo "Current tag: ${{ github.ref_name }}"

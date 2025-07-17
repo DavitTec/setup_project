@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script: setup_project.sh
-# Version: 0.3.1
+# Version: 0.3.2
 # Description: Automates initial project setup, including config creation, dependency installation, git init, and file generation based on path inference or YAML config.
 # Purpose: Bootstrap small to monorepo projects across languages (Node, Python, Bash, Perl, etc.) with reproducibility, dependency management, and VSCode integration.
 # Alias: setprj
@@ -32,6 +32,7 @@ declare -g LAST_LOG_NO_NEWLINE=false # Track if last log ended without newline f
 declare -g VERSION
 VERSION=$(awk '/^####### \/HEADER #######/ {exit} /^# Version:/ {print $3}' "$0")
 declare -g CLEAR_LOGS=true # Delete logs at start, default true
+declare -g LOG_DIR="./logs" # Configurable log directory
 
 # Logging Function
 # TODO: #019 Source logging script if available
@@ -105,9 +106,9 @@ log() {
 # Function to backup this script to archives
 # TODO: #020 Integrate external backup script
 backup() {
-  mkdir -p archives
+  mkdir -p ./archives
   local source="./scripts/setup_project.sh"
-  local backup_file="archives/setup_project_v$VERSION.sh"
+  local backup_file="./archives/setup_project_v$VERSION.sh"
   cp "$source" "$backup_file"
   # TODO: #023 what else to backup
   #       1) probably to gzip all to a external folder
@@ -211,19 +212,26 @@ parse_path() {
   [[ -z "$version" ]] && version="$VERSION"
 
   primary_language="bash" # Global, Default
-  frameworks=()           # Global
-  if [[ "$full_path" =~ /node/ || "$project_name" =~ ^node_ ]]; then
+  package_manager="none"
+  frameworks=()
+  if [[ "$root_name" =~ ^node_ ]]; then
     primary_language="node"
+    if [[ "$root_name" =~ _pnpm_ ]]; then
+      package_manager="pnpm"
+    elif [[ "$root_name" =~ _npm_ ]]; then
+      package_manager="npm"
+    fi
     if [[ "$full_path" =~ /next/ ]]; then
       frameworks+=("next.js")
     fi
-  elif [[ "$full_path" =~ /python/ ]]; then
+  elif [[ "$full_path" =~ /python/ || "$root_name" =~ ^python_ ]]; then
     primary_language="python"
-  elif [[ "$full_path" =~ /perl/ ]]; then
+    package_manager="pip"
+  elif [[ "$full_path" =~ /perl/ || "$root_name" =~ ^perl_ ]]; then
     primary_language="perl"
-  elif [[ "$full_path" =~ /bashscripts/ ]]; then
+  elif [[ "$full_path" =~ /bashscripts/ || "$root_name" =~ ^bash_ ]]; then
     primary_language="bash"
-  elif [[ "$full_path" =~ /monorepo/ ]]; then
+  elif [[ "$full_path" =~ /monorepo/ || "$root_name" =~ ^multi_ ]]; then
     primary_language="multi"
   fi
 
@@ -233,8 +241,9 @@ parse_path() {
   private="true"                                     # Global
   description="Auto-generated project based on path" # Global
 
-  log -d "Inferred: Name=$project_name, Version=$version, Language=$primary_language, Frameworks=${frameworks[*]}, Author=$author"
+  log -d "Inferred: Name=$project_name, Version=$version, Language=$primary_language, PackageManager=$package_manager, Frameworks=${frameworks[*]}, Author=$author"
 }
+
 
 # Function to create basic initial_config.yaml if missing
 create_default_yaml() {
@@ -259,6 +268,7 @@ project:
   private: $private
   environment: $environment
   primary_language: $primary_language
+  package_manager: $package_manager
   frameworks: [$frameworks_joined]
 
 dependencies:
@@ -292,14 +302,16 @@ EOF
 # Function to generate files from recipe
 generate_files_from_recipe() {
   local recipe_file="$1"
+  log -d "Processing files from recipe: $recipe_file"
   local file_count
-  file_count=$(yq e '.files | length' "$recipe_file" || log "Error: yq parse failed for files")
+  file_count=$(yq e '.files | length' "$recipe_file" || { log "Error: yq parse failed for files"; return 1; })
+  log -d "Found $file_count files to generate"
   if [[ "$file_count" -gt 0 ]]; then
     for ((i=0; i<file_count; i++)); do
       local file_path
       local file_content
-      file_path=$(yq e ".files[$i].path" "$recipe_file" || log "Error: yq parse failed for file path")
-      file_content=$(yq e ".files[$i].content" "$recipe_file" || log "Error: yq parse failed for file content")
+      file_path=$(yq e ".files[$i].path" "$recipe_file" || { log "Error: yq parse failed for file path"; return 1; })
+      file_content=$(yq e ".files[$i].content" "$recipe_file" || { log "Error: yq parse failed for file content"; return 1; })
       # Replace placeholders with project metadata
       TODO: change
       # Shellcheck 
@@ -317,17 +329,18 @@ generate_files_from_recipe() {
 # Function to install missing global tools (e.g., git, yq)
 install_global_tools() {
   local tools
-  tools=$(yq e '.dependencies.global_tools[] | .name' "$config_file" || log "Error: yq parse failed for tools")
+  tools=$(yq e '.dependencies.global_tools[] | .name' "$config_file" || { log "Error: yq parse failed for tools"; return 1; })
   for tool in $tools; do
     if ! command -v "$tool" &>/dev/null; then
       local install
-      install=$(yq e ".dependencies.global_tools[] | select(.name == \"$tool\") | .install_if_missing" "$config_file" || log "Error: yq parse failed for install flag")
+      install=$(yq e ".dependencies.global_tools[] | select(.name == \"$tool\") | .install_if_missing" "$config_file" || { log "Error: yq parse failed for install flag"; return 1; })
       if [[ "$install" = "true" ]]; then
         log -n "Installing $tool... "
         if sudo apt update && sudo apt install -y "$tool"; then
           log "done"
         else
           log "Error: Installation of $tool failed"
+          return 1
         fi
       fi
     fi
@@ -338,11 +351,11 @@ install_global_tools() {
 setup_git() {
   log "GIT: setting up git"
   local init
-  init=$(yq e '.git.init' "$config_file" || log "Error: yq parse failed for git.init")
+  init=$(yq e '.git.init' "$config_file" || { log "Error: yq parse failed for git.init"; return 1; })
   if [[ "$init" = "true" ]]; then
-    git init || log "Error: git init failed"
+    git init || { log "Error: git init failed"; return 1; }
     local template
-    template=$(yq e '.git.template' "$config_file" || log "Error: yq parse failed for git.template")
+    template=$(yq e '.git.template' "$config_file" || { log "Error: yq parse failed for git.template"; return 1; })
     URL="https://raw.githubusercontent.com/DavitTec/gitignore/main/${template}.gitignore"
     if curl -s "$URL" >.gitignore; then
       echo -e "\n# Archives\narchives/" >>.gitignore
@@ -374,7 +387,7 @@ EOF
   fi
 }
 
-# Function to generate README.md (simulate Create_Readme.sh)
+# Function to generate README.md
 generate_readme() {
   local readme="README.md"
   parse_path
@@ -465,10 +478,10 @@ EOF
 # Function to archive config and script
 post_setup_actions() {
   local archive
-  archive=$(yq e '.post_setup.archive_config' "$config_file" || log "Error: yq parse failed for post_setup")
+  archive=$(yq e '.post_setup.archive_config' "$config_file" || { log "Error: yq parse failed for post_setup"; return 1; })
   if [[ "$archive" = "true" ]]; then
-    mkdir -p archives
-    mv "$config_file" "archives/initial_config_$(date +%Y%m%d).yaml" || log "Error: Failed to archive config"
+    mkdir -p ./archives
+    mv "$config_file" "./archives/initial_config_$(date +%Y%m%d).yaml" || { log "Error: Failed to archive config"; return 1; }
   fi
   if [[ -f "main.sh" ]]; then
     ./main.sh -b
@@ -531,9 +544,11 @@ install_yq() {
 
 # Main function
 main() {
-  local config_file="initial_config.yaml"
+  log -d "Entering main function"
+  log -d "Current directory: $PWD"
+  local config_file="./initial_config.yaml"
   local recipe="./recipes/generic_bash.yaml"
-  local merged_config="merged_config.yaml"
+  local merged_config="./merged_config.yaml"
 
   while [[ $# -gt 0 ]]; do
     case $1 in
@@ -591,13 +606,16 @@ main() {
     log "Recipe not found, using default settings"
   fi
 
+  # Set LOG_DIR based on recipe or default
+  LOG_DIR=$(yq e '.logging.path // "./logs"' "$config_file" || { log "Error: yq parse failed for logging.path"; return 1; })
+
   # Move or reset logs if true
   if "$CLEAR_LOGS"; then
     local logfile
-    logfile=$(find ./logs -name "setup_project_*.log" -print -quit 2>/dev/null)
+    logfile=$(find "$LOG_DIR" -name "setup_project_*.log" -print -quit 2>/dev/null)
     if [[ -n "$logfile" ]]; then
-      mkdir -p archives
-      mv "$logfile" "./archives/" || log "Error: Failed to move $logfile"
+      mkdir -p ./archives
+      mv "$logfile" "./archives/" || { log "Error: Failed to move $logfile"; return 1; }
       log "[Reset] $logfile moved to ./archives"
       log "[NEW] ########### Logfile created ##############"
     fi
@@ -622,8 +640,8 @@ main() {
 
   install_global_tools
 
-  project_name=$(yq e '.project.name' "$config_file")
-  primary_language=$(yq e '.project.primary_language' "$config_file")
+  project_name=$(yq e '.project.name' "$config_file" || { log "Error: yq parse failed for project.name"; return 1; })
+  primary_language=$(yq e '.project.primary_language' "$config_file" || { log "Error: yq parse failed for primary_language"; return 1; })
 
   setup_git
   generate_readme
@@ -650,6 +668,7 @@ main() {
   post_setup_actions
 
   log "Project setup complete!"
+  log -d "Exiting main function"
 }
 
 ####### MAIN #######
