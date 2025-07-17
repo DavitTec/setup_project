@@ -1,11 +1,11 @@
 #!/bin/bash
 # Script: setup_project.sh
-# Version: 0.3.0
+# Version: 0.3.1
 # Description: Automates initial project setup, including config creation, dependency installation, git init, and file generation based on path inference or YAML config.
 # Purpose: Bootstrap small to monorepo projects across languages (Node, Python, Bash, Perl, etc.) with reproducibility, dependency management, and VSCode integration.
 # Alias: setprj
 # Created: 2025-07-12
-# Updated: 2025-07-14
+# Updated: 2025-07-15
 # Author: David Mullins
 # Contact: david@davit.ie / https://davit.ie
 # Git: https://github.com/DavitTec/$(basename "$(pwd)")
@@ -16,6 +16,7 @@
 #     -b, --backup: Backup script to archives
 #     -s, --vscode: Setup vscode
 #     --config-path <path>: Specify custom path to initial_config.yaml
+#     --recipe <path>: Specify recipe YAML file
 #     --verbose <off|on|debug>: Set logging verbosity (default: on)
 # License: MIT
 # Status: development
@@ -52,7 +53,7 @@ log() {
     d) msg_level="debug" ;;
     e) echo_opts="-e" ;;
     n) no_newline=true ;;
-    *) log "Invalid option: -$OPTARG" ;; # Recursive, but careful
+    *) log "Invalid option: -$OPTARG" ;;
     esac
   done
   shift $((OPTIND - 1))
@@ -70,7 +71,7 @@ log() {
   log_file="${LOG_DIR}/${script_name}_$(date '+%Y%m%d').log"
 
   if "$LAST_LOG_NO_NEWLINE"; then
-    log_entry="$message" # Continuation: no timestamp
+    log_entry="$message"
   else
     log_entry="[$timestamp] $message"
   fi
@@ -98,12 +99,7 @@ log() {
     fi
   fi
 
-  # Update flag for next call
-  if "$no_newline"; then
-    LAST_LOG_NO_NEWLINE=true
-  else
-    LAST_LOG_NO_NEWLINE=false
-  fi
+  LAST_LOG_NO_NEWLINE=$no_newline
 }
 
 # Function to backup this script to archives
@@ -147,9 +143,9 @@ setup_vscode() {
   "files.autoSave": "afterDelay",
   "files.autoSaveDelay": 1000,
   "eslint.format.enable": true,
-  "eslint.validate": ["typescript", "typescriptreact"],
+  "eslint.validate": ["javascript", "html"],
   "prettier.enable": true,
-  "[typescript]": {
+  "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "editor.fontSize": 12,
@@ -169,7 +165,7 @@ EOF
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "bashdb",
+      "type": "node",
       "request": "launch",
       "name": "Bash-Debug (simplest configuration)",
       "program": "\${workspaceFolder}/scripts/setup_project.sh",
@@ -190,6 +186,7 @@ show_help() {
   echo "  -b, --backup: Backup script to archives"
   echo "  -s, --vscode: Setup vscode"
   echo "  --config-path <path>: Specify custom path to initial_config.yaml"
+  echo "  --recipe <path>: Specify recipe YAML file"
   echo "  --verbose <off|on|debug>: Set logging verbosity (default: on)"
   exit 0
 }
@@ -292,6 +289,31 @@ EOF
   log "Created default $config_file"
 }
 
+# Function to generate files from recipe
+generate_files_from_recipe() {
+  local recipe_file="$1"
+  local file_count
+  file_count=$(yq e '.files | length' "$recipe_file" || log "Error: yq parse failed for files")
+  if [[ "$file_count" -gt 0 ]]; then
+    for ((i=0; i<file_count; i++)); do
+      local file_path
+      local file_content
+      file_path=$(yq e ".files[$i].path" "$recipe_file" || log "Error: yq parse failed for file path")
+      file_content=$(yq e ".files[$i].content" "$recipe_file" || log "Error: yq parse failed for file content")
+      # Replace placeholders with project metadata
+      TODO: change
+      # Shellcheck 
+      # shellcheck disable=SC2001
+      file_content=$(echo "$file_content" | sed "s/{{project.name}}/$project_name/g")
+      # shellcheck disable=SC2001
+      file_content=$(echo "$file_content" | sed "s/{{project.version}}/$version/g")
+      mkdir -p "$(dirname "$file_path")"
+      echo "$file_content" > "$file_path"
+      log "Generated $file_path"
+    done
+  fi
+}
+
 # Function to install missing global tools (e.g., git, yq)
 install_global_tools() {
   local tools
@@ -327,13 +349,12 @@ setup_git() {
       log "Git initialized with $template template from fork"
     else
       log "Error: Failed to fetch .gitignore template from fork; falling back to inline"
-      if [[ "$template" = "bash" ]]; then
+      if [[ "$template" = "Node" ]]; then
         cat <<EOF >.gitignore
-# Temp files
-*~
-*.swp
-*.tmp
-*.bak
+# Node.js
+node_modules/
+dist/
+*.log
 
 # Logs and archives
 logs/
@@ -347,7 +368,7 @@ Thumbs.db
 # Bash specific
 *.sh~
 EOF
-        log "Used inline bash template"
+        log "Used inline Node template"
       fi
     fi
   fi
@@ -512,6 +533,7 @@ install_yq() {
 main() {
   local config_file="initial_config.yaml"
   local recipe="./recipes/generic_bash.yaml"
+  local merged_config="merged_config.yaml"
 
   while [[ $# -gt 0 ]]; do
     case $1 in
@@ -556,6 +578,15 @@ main() {
     log "Using recipe: $recipe"
     # Merge recipe with initial_config.yaml (if present)
     # Example: yq ea '. as $item ireduce ({}; . * $item )' initial_config.yaml "$recipe" > merged_config.yaml
+   if [[ -f "$config_file" ]]; then
+      # shellcheck disable=SC2016
+      yq ea '. as $item ireduce ({}; . * $item )' "$recipe" "$config_file" > "$merged_config"
+      config_file="$merged_config"
+      log "Merged recipe with $config_file into $merged_config"
+    else
+      cp "$recipe" "$config_file"
+      log "Copied recipe to $config_file"
+    fi
   else
     log "Recipe not found, using default settings"
   fi
@@ -597,17 +628,23 @@ main() {
   setup_git
   generate_readme
   generate_main_sh
+  generate_files_from_recipe "$config_file"
 
   # Add dependencies based on language, e.g., if node: pnpm init -y
   if [[ "$primary_language" = "node" ]]; then
     if command -v pnpm &>/dev/null; then
-      pnpm init -y
-      pnpm add -D prettier conventional-changelog-cli
+      if [[ ! -f "package.json" ]]; then
+        pnpm init
+        log "Initialized package.json with pnpm"
+      fi
+      pnpm add -D prettier conventional-changelog-cli serve
+      log "Installed Node.js dependencies: prettier, conventional-changelog-cli, serve"
     else
       log "Error: pnpm not found; skipping Node.js dependencies"
     fi
   elif [[ "$primary_language" = "python" ]]; then
     echo "prettier==3.0" >requirements.txt
+    log "Generated requirements.txt for Python"
   fi
 
   post_setup_actions
