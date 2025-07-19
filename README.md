@@ -36,26 +36,7 @@ A Bash script to bootstrap development projects across multiple languages using 
 
 ## Installation
 
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/DavitTec/setup_project.git
-   cd setup_project
-   ```
-
-2. Ensure dependencies (`git`, `yq`) are installed:
-
-   ```bash
-   sudo apt update && sudo apt install -y git yq
-   sudo npm install -g pnpm
-   ```
-
-3. Run the script:
-
-   ```bash
-   ./scripts/setup_project.sh or
-   ./scripts/setup_project.sh --recipe ./recipes/node_pnpm_html_website.yaml
-   ```
+TODO:
 
 ## Usage
 
